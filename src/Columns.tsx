@@ -12,19 +12,19 @@ import {
 import { Button } from "./components/ui/button";
 import { MoreHorizontalIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "./components/ui/checkbox";
+import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Payment = {
-  id: number;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
+export type Meeting = {
+  id: string;
+  name: string;
+  status: "scheduled" | "finished" | "canceled";
+  scheduled_at: string;
 };
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Meeting>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -48,34 +48,31 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
-  },
-  {
-    accessorKey: "email",
+    accessorKey: "name",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <DataTableColumnHeader
+          column={column}
+          title="Name"
+          className="text-left"
+        />
       );
     },
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "status",
+    header: "Status",
+  },
+  {
+    accessorKey: "scheduled_at",
+    header: () => <div className="text-right">Scheduled At</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
+      const scheduledAt = row.getValue("scheduled_at") as string;
+      return (
+        <div className="text-right">
+          {new Date(scheduledAt).toLocaleString()}
+        </div>
+      );
     },
   },
   {
