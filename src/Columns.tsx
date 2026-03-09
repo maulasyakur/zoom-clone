@@ -17,6 +17,10 @@ import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 import { Badge } from "./components/ui/badge";
 import { cn } from "./lib/utils";
 import { Check, Clock, Cross } from "lucide-react";
+import { toast } from "sonner";
+import { useMeetings } from "./lib/hooks";
+import DeleteMeetingAlertDialog from "./components/DeleteMeetingAlertDialog";
+import { useState } from "react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -106,30 +110,53 @@ export const columns: ColumnDef<Meeting>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
+      const [open, setOpenChange] = useState(false);
       const payment = row.original;
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <HugeiconsIcon icon={MoreHorizontalIcon} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(payment.id.toString())
-              }
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <HugeiconsIcon icon={MoreHorizontalIcon} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => {
+                  navigator.clipboard.writeText(payment.id.toString());
+                  toast.success("Meeting ID copied to clipboard");
+                }}
+              >
+                Copy meeting ID
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a
+                  href={`https://meet.jit.si/${payment.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Open Meeting
+                </a>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => setOpenChange(true)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DeleteMeetingAlertDialog
+            open={open}
+            onOpenChange={setOpenChange}
+            meetingId={payment.id}
+          />
+        </>
       );
     },
   },
