@@ -15,7 +15,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Checkbox } from "./components/ui/checkbox";
 import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 import { Badge } from "./components/ui/badge";
-import { Check, Clock, Cross } from "lucide-react";
+import { Check, Clock, Cross, FilterIcon } from "lucide-react";
 import { toast } from "sonner";
 import DeleteMeetingAlertDialog from "./components/DeleteMeetingAlertDialog";
 import { useState } from "react";
@@ -67,7 +67,46 @@ export const columns: ColumnDef<Meeting>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status",
+    // the header now renders a dropdown button so users can filter by status
+    header: ({ column }) => {
+      // clicking each item will set the column filter to that value;
+      // the default filter function is `includesString` so this works fine
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="-ml-3 h-8">
+              Status <FilterIcon />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem
+              onClick={() => column.setFilterValue("scheduled")}
+            >
+              <Badge>
+                <Clock />
+                Scheduled
+              </Badge>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => column.setFilterValue("finished")}>
+              <Badge variant={"success"}>
+                <Check />
+                Finished
+              </Badge>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => column.setFilterValue("canceled")}>
+              <Badge variant={"destructive"}>
+                <Cross />
+                Canceled
+              </Badge>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => column.setFilterValue("")}>
+              Clear
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
     cell: ({ row }) => {
       const badgeMap: Record<
         string,
