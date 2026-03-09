@@ -63,37 +63,6 @@ export function useLocalStorage<T>(
   return [storedValue, setValue];
 }
 
-// a custom hook using the localstorage hook above to manage meetings
-// export function useMeetings() {
-//   const [meetings, setMeetings] = useLocalStorage<Meeting[]>("meetings", []);
-
-//   const addMeeting = (meeting: Meeting) => {
-//     setMeetings((prev) => [...prev, meeting]);
-//   };
-
-//   const removeMeeting = (meetingId: string) => {
-//     setMeetings((prev) => prev.filter((m) => m.id !== meetingId));
-//   };
-
-//   const clearMeetings = () => {
-//     setMeetings([]);
-//   };
-
-//   const updateMeeting = (meetingId: string, updates: any) => {
-//     setMeetings((prev) =>
-//       prev.map((m) => (m.id === meetingId ? { ...m, ...updates } : m)),
-//     );
-//   };
-
-//   return {
-//     meetings,
-//     addMeeting,
-//     removeMeeting,
-//     clearMeetings,
-//     updateMeeting,
-//   };
-// }
-
 // Meeting Context
 interface MeetingContextType {
   meetings: Meeting[];

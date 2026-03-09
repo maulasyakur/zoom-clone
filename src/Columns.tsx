@@ -14,6 +14,9 @@ import { MoreHorizontalIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Checkbox } from "./components/ui/checkbox";
 import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
+import { Badge } from "./components/ui/badge";
+import { cn } from "./lib/utils";
+import { Check, Clock, Cross } from "lucide-react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -62,6 +65,31 @@ export const columns: ColumnDef<Meeting>[] = [
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      const badgeMap: Record<
+        string,
+        {
+          variant: "default" | "success" | "destructive";
+          icon: React.ReactNode;
+        }
+      > = {
+        scheduled: { variant: "default", icon: <Clock /> },
+        completed: { variant: "success", icon: <Check /> },
+        canceled: { variant: "destructive", icon: <Cross /> },
+      };
+
+      return (
+        <Badge
+          className={cn(
+            badgeMap[row.original.status].variant,
+            "flex items-center gap-1",
+          )}
+        >
+          {badgeMap[row.original.status].icon}
+          {row.original.status}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "scheduled_at",

@@ -123,7 +123,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="mt-2">
         <DataTablePagination table={table} />
       </div>
     </>

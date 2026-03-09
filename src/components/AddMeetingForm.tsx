@@ -59,7 +59,7 @@ export default function AddMeetingForm() {
       onSubmit: schema,
     },
     onSubmit: async ({ value }) => {
-      toast.success("Form submitted successfully");
+      toast.success("Meeting added successfully");
       addMeeting({
         id: crypto.randomUUID(),
         name: value.name,
