@@ -134,7 +134,36 @@ export const columns: ColumnDef<Meeting>[] = [
   },
   {
     accessorKey: "scheduled_at",
-    header: () => <div className="text-right">Scheduled At</div>,
+    header: ({ column }) => (
+      <div className="flex justify-end items-center">
+        <DataTableColumnHeader column={column} title="Scheduled At" />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="ml-1">
+              <FilterIcon />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => column.setFilterValue("today")}>
+              Today
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => column.setFilterValue("tomorrow")}>
+              Tomorrow
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => column.setFilterValue("upcoming")}>
+              Upcoming (all)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => column.setFilterValue("past")}>
+              Past (all)
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => column.setFilterValue("")}>
+              Clear
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    ),
     cell: ({ row }) => {
       const scheduledAt = row.getValue("scheduled_at") as string;
       return (
@@ -142,6 +171,33 @@ export const columns: ColumnDef<Meeting>[] = [
           {new Date(scheduledAt).toLocaleString()}
         </div>
       );
+    },
+    filterFn: (row, columnId, filterValue) => {
+      if (!filterValue) return true;
+      const scheduledAt = new Date(row.getValue(columnId));
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const endOfTomorrow = new Date(tomorrow);
+      endOfTomorrow.setHours(23, 59, 59, 999);
+      switch (filterValue) {
+        case "today":
+          return scheduledAt >= today && scheduledAt < tomorrow;
+        case "tomorrow":
+          return scheduledAt >= tomorrow && scheduledAt < endOfTomorrow;
+        case "upcoming":
+          return scheduledAt >= endOfTomorrow;
+        case "past":
+          return scheduledAt < today;
+        default:
+          return true;
+      }
+    },
+    sortingFn: (rowA, rowB, columnId) => {
+      const a = new Date(rowA.getValue(columnId));
+      const b = new Date(rowB.getValue(columnId));
+      return a.getTime() - b.getTime();
     },
   },
   {
