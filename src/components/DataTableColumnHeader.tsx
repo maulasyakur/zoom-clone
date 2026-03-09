@@ -17,12 +17,14 @@ interface DataTableColumnHeaderProps<
 > extends React.HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>;
   title: string;
+  children?: React.ReactNode;
 }
 
 export function DataTableColumnHeader<TData, TValue>({
   column,
   title,
   className,
+  children,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>;
@@ -61,6 +63,7 @@ export function DataTableColumnHeader<TData, TValue>({
             <EyeOff />
             Hide
           </DropdownMenuItem>
+          {children}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

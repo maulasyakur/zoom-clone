@@ -135,42 +135,30 @@ export const columns: ColumnDef<Meeting>[] = [
   {
     accessorKey: "scheduled_at",
     header: ({ column }) => (
-      <div className="flex justify-end items-center">
-        <DataTableColumnHeader column={column} title="Scheduled At" />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="ml-1">
-              <FilterIcon />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => column.setFilterValue("today")}>
-              Today
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => column.setFilterValue("tomorrow")}>
-              Tomorrow
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => column.setFilterValue("upcoming")}>
-              Upcoming (all)
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => column.setFilterValue("past")}>
-              Past (all)
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => column.setFilterValue("")}>
-              Clear
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <DataTableColumnHeader column={column} title="Scheduled At">
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel>Filters</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => column.setFilterValue("today")}>
+          Today
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => column.setFilterValue("tomorrow")}>
+          Tomorrow
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => column.setFilterValue("upcoming")}>
+          Upcoming (all)
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => column.setFilterValue("past")}>
+          Past (all)
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => column.setFilterValue("")}>
+          Clear Filter
+        </DropdownMenuItem>
+      </DataTableColumnHeader>
     ),
     cell: ({ row }) => {
-      const scheduledAt = row.getValue("scheduled_at") as string;
-      return (
-        <div className="text-right">
-          {new Date(scheduledAt).toLocaleString()}
-        </div>
-      );
+      return <div>{new Date(row.original.scheduled_at).toLocaleString()}</div>;
     },
     filterFn: (row, columnId, filterValue) => {
       if (!filterValue) return true;
