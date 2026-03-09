@@ -68,6 +68,7 @@ interface MeetingContextType {
   meetings: Meeting[];
   addMeeting: (meeting: Meeting) => void;
   removeMeeting: (meetingId: string) => void;
+  removeMeetings: (meetingIds: string[]) => void;
   clearMeetings: () => void;
   updateMeeting: (meetingId: string, updates: any) => void;
 }
@@ -86,6 +87,11 @@ export function MeetingProvider({ children }: { children: ReactNode }) {
     setMeetings((prev) => prev.filter((m) => m.id !== meetingId));
   };
 
+  // convenience helper for deleting multiple meetings in one state update
+  const removeMeetings = (meetingIds: string[]) => {
+    setMeetings((prev) => prev.filter((m) => !meetingIds.includes(m.id)));
+  };
+
   const clearMeetings = () => {
     setMeetings([]);
   };
@@ -102,6 +108,7 @@ export function MeetingProvider({ children }: { children: ReactNode }) {
         meetings,
         addMeeting,
         removeMeeting,
+        removeMeetings,
         clearMeetings,
         updateMeeting,
       }}

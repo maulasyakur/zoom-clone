@@ -15,7 +15,6 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Checkbox } from "./components/ui/checkbox";
 import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 import { Badge } from "./components/ui/badge";
-import { cn } from "./lib/utils";
 import { Check, Clock, Cross } from "lucide-react";
 import { toast } from "sonner";
 import DeleteMeetingAlertDialog from "./components/DeleteMeetingAlertDialog";

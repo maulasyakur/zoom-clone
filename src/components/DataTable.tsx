@@ -26,6 +26,7 @@ import { useState } from "react";
 import { Input } from "./ui/input";
 import { DataTableViewOptions } from "./DataTableColumnToggle";
 import AddMeetingButton from "./AddMeetingButton";
+import { BulkDeleteButton } from "./BulkDeleteButton";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -70,6 +71,8 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        {/* show bulk delete when any filtered rows are selected */}
+        <BulkDeleteButton table={table} />
         <DataTableViewOptions table={table} />
         <AddMeetingButton />
       </div>
