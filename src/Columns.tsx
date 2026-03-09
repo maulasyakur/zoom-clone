@@ -10,12 +10,16 @@ import {
   DropdownMenuTrigger,
 } from "./components/ui/dropdown-menu";
 import { Button } from "./components/ui/button";
-import { MoreHorizontalIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { Checkbox } from "./components/ui/checkbox";
 import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 import { Badge } from "./components/ui/badge";
-import { Check, Clock, Cross, FilterIcon } from "lucide-react";
+import {
+  Check,
+  Clock,
+  Cross,
+  FilterIcon,
+  ListChevronsUpDown,
+} from "lucide-react";
 import { toast } from "sonner";
 import DeleteMeetingAlertDialog from "./components/DeleteMeetingAlertDialog";
 import { useState } from "react";
@@ -202,7 +206,7 @@ export const columns: ColumnDef<Meeting>[] = [
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
-                <HugeiconsIcon icon={MoreHorizontalIcon} />
+                <ListChevronsUpDown />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
