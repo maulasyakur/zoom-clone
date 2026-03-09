@@ -12,6 +12,13 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Spinner } from "./ui/spinner";
 import { useMeetings } from "@/lib/hooks";
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectItem,
+  SelectValue,
+} from "./ui/select";
 import { formatDateForInput, parseLocalDateTimeString } from "@/lib/utils";
 
 const schema = z.object({
@@ -22,24 +29,37 @@ const schema = z.object({
       (date) => date > new Date(),
       "Scheduled date must be in the future",
     ),
+  status: z.enum(["scheduled", "finished", "canceled"]),
 });
 
-export default function AddMeetingForm() {
-  const { addMeeting } = useMeetings();
+type EditMeetingFormProps = {
+  meetingId: string;
+  initialName: string;
+  initialScheduledAt: string;
+  initialStatus: "scheduled" | "finished" | "canceled";
+};
+
+export default function EditMeetingForm({
+  meetingId,
+  initialName,
+  initialScheduledAt,
+  initialStatus,
+}: EditMeetingFormProps) {
+  const { updateMeeting } = useMeetings();
   const form = useForm({
     defaultValues: {
-      name: "",
-      scheduled_at: new Date(),
+      name: initialName,
+      scheduled_at: new Date(initialScheduledAt),
+      status: initialStatus,
     },
     validators: {
       onSubmit: schema,
     },
     onSubmit: async ({ value }) => {
-      toast.success("Meeting added successfully");
-      addMeeting({
-        id: crypto.randomUUID(),
+      toast.success("Meeting updated successfully");
+      updateMeeting(meetingId, {
         name: value.name,
-        status: "scheduled",
+        status: value.status,
         scheduled_at: value.scheduled_at.toISOString(),
       });
       form.reset();
@@ -109,12 +129,43 @@ export default function AddMeetingForm() {
             );
           }}
         />
+        <form.Field
+          name="status"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Status</FieldLabel>
+                <Select
+                  name={field.name}
+                  value={field.state.value}
+                  onValueChange={(value) =>
+                    field.handleChange(
+                      value as "scheduled" | "finished" | "canceled",
+                    )
+                  }
+                >
+                  <SelectTrigger aria-invalid={isInvalid}>
+                    <SelectValue placeholder="Select a status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="scheduled">Scheduled</SelectItem>
+                    <SelectItem value="finished">Finished</SelectItem>
+                    <SelectItem value="canceled">Canceled</SelectItem>
+                  </SelectContent>
+                </Select>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
             <Field>
               <Button type="submit" disabled={!canSubmit}>
-                {isSubmitting ? <Spinner /> : "Schedule Meeting"}
+                {isSubmitting ? <Spinner /> : "Edit Meeting"}
               </Button>
             </Field>
           )}

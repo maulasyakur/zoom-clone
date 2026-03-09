@@ -18,9 +18,9 @@ import { Badge } from "./components/ui/badge";
 import { cn } from "./lib/utils";
 import { Check, Clock, Cross } from "lucide-react";
 import { toast } from "sonner";
-import { useMeetings } from "./lib/hooks";
 import DeleteMeetingAlertDialog from "./components/DeleteMeetingAlertDialog";
 import { useState } from "react";
+import EditMeetingDialog from "./components/EditMeetingDialog";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -73,24 +73,23 @@ export const columns: ColumnDef<Meeting>[] = [
       const badgeMap: Record<
         string,
         {
+          text: string;
           variant: "default" | "success" | "destructive";
           icon: React.ReactNode;
         }
       > = {
-        scheduled: { variant: "default", icon: <Clock /> },
-        completed: { variant: "success", icon: <Check /> },
-        canceled: { variant: "destructive", icon: <Cross /> },
+        scheduled: { text: "Scheduled", variant: "default", icon: <Clock /> },
+        finished: { text: "Finished", variant: "success", icon: <Check /> },
+        canceled: { text: "Canceled", variant: "destructive", icon: <Cross /> },
       };
 
       return (
         <Badge
-          className={cn(
-            badgeMap[row.original.status].variant,
-            "flex items-center gap-1",
-          )}
+          className="flex items-center gap-1"
+          variant={badgeMap[row.original.status].variant}
         >
           {badgeMap[row.original.status].icon}
-          {row.original.status}
+          {badgeMap[row.original.status].text}
         </Badge>
       );
     },
@@ -110,7 +109,9 @@ export const columns: ColumnDef<Meeting>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const [open, setOpenChange] = useState(false);
+      const [openDelete, setOpenDeleteChange] = useState(false);
+      const [openEdit, setOpenEditChange] = useState(false);
+
       const payment = row.original;
 
       return (
@@ -142,19 +143,29 @@ export const columns: ColumnDef<Meeting>[] = [
                 </a>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setOpenEditChange(true)}>
+                Edit
+              </DropdownMenuItem>
               <DropdownMenuItem
                 variant="destructive"
-                onClick={() => setOpenChange(true)}
+                onClick={() => setOpenDeleteChange(true)}
               >
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <DeleteMeetingAlertDialog
-            open={open}
-            onOpenChange={setOpenChange}
+            open={openDelete}
+            onOpenChange={setOpenDeleteChange}
             meetingId={payment.id}
+          />
+          <EditMeetingDialog
+            open={openEdit}
+            setOpenChange={setOpenEditChange}
+            meetingId={payment.id}
+            initialName={payment.name}
+            initialScheduledAt={payment.scheduled_at}
+            initialStatus={payment.status}
           />
         </>
       );
