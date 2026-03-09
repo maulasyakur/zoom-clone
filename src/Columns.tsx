@@ -198,7 +198,7 @@ export const columns: ColumnDef<Meeting>[] = [
       const [openDelete, setOpenDeleteChange] = useState(false);
       const [openEdit, setOpenEditChange] = useState(false);
 
-      const payment = row.original;
+      const meeting = row.original;
 
       return (
         <>
@@ -213,15 +213,17 @@ export const columns: ColumnDef<Meeting>[] = [
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
-                  navigator.clipboard.writeText(payment.id.toString());
-                  toast.success("Meeting ID copied to clipboard");
+                  navigator.clipboard.writeText(
+                    `https://meet.jit.si/${meeting.id}`,
+                  );
+                  toast.success("Meeting link copied to clipboard");
                 }}
               >
-                Copy meeting ID
+                Copy meeting link
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <a
-                  href={`https://meet.jit.si/${payment.id}`}
+                  href={`https://meet.jit.si/${meeting.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -243,15 +245,15 @@ export const columns: ColumnDef<Meeting>[] = [
           <DeleteMeetingAlertDialog
             open={openDelete}
             onOpenChange={setOpenDeleteChange}
-            meetingId={payment.id}
+            meetingId={meeting.id}
           />
           <EditMeetingDialog
             open={openEdit}
             setOpenChange={setOpenEditChange}
-            meetingId={payment.id}
-            initialName={payment.name}
-            initialScheduledAt={payment.scheduled_at}
-            initialStatus={payment.status}
+            meetingId={meeting.id}
+            initialName={meeting.name}
+            initialScheduledAt={meeting.scheduled_at}
+            initialStatus={meeting.status}
           />
         </>
       );
