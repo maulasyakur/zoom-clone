@@ -6,7 +6,7 @@ export default function Home() {
   const { meetings } = useMeetings();
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="max-w-4xl mx-auto py-10 px-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">
           Hi!👋 Let's schedule a meeting for today!

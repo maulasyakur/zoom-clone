@@ -126,9 +126,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="mt-2">
-        <DataTablePagination table={table} />
-      </div>
+      <DataTablePagination table={table} className="mt-4" />
     </>
   );
 }

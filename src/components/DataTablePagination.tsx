@@ -14,22 +14,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
+  className?: string;
 }
 
 export function DataTablePagination<TData>({
   table,
+  className,
 }: DataTablePaginationProps<TData>) {
   return (
-    <div className="flex items-center justify-between px-2">
-      <div className="flex-1 text-sm text-muted-foreground">
+    <div className={cn("flex items-center justify-between px-2", className)}>
+      <div className="flex-1 text-sm text-muted-foreground hidden md:block">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
         {table.getFilteredRowModel().rows.length} row(s) selected.
       </div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
-        <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-6 lg:space-x-8 ml-auto">
+        <div className="items-center space-x-2 hidden lg:flex">
           <p className="text-sm font-medium">Rows per page</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
